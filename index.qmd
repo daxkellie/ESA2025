@@ -1,0 +1,510 @@
+---
+title: "A guide to writing good code for the busy scientist"
+author: "<br><b>Dax Kellie</b>, Shandiya Balasubramaniam, Martin Westgate  <br> 
+![](images/logos/ALA_Logo.png){style='width: auto; height: 90px; margin-top: 50px; padding-left: 20px; padding-right: 20px'} 
+![](images/logos/NCRIS_logo.png){style='width: auto; height: 90px; margin-top: 50px; padding-left: 20px; padding-right: 20px'} 
+![](images/logos/CSIRO_logo.png){style='width: auto; height: 90px; margin-top: 50px; padding-left: 20px; padding-right: 20px'} <br><br> 
+[{{< iconify simple-icons:bluesky size=lg fill='#fe4' >}}]{style='color:#08f;'} <span style='font-size: 2.5rem;'>@daxkellie.bsky.social</span> "
+title-slide-attributes: 
+  data-background-color: "#fde5ce"
+  data-background-image: images/stripe-background.png
+  data-background-size: cover
+  data-background-opacity: "0.3"
+format: 
+  revealjs: 
+    theme: [default, custom.scss] 
+    transition-speed: fast
+    embed-resources: true
+---
+
+##  {#acknowledgement data-menu-title="Acknowledgement" background-image="images/beach-greeny.jpg" background-opacity="0.3"}
+
+<br><br>
+
+<center>[I acknowledge the Traditional Owners of the lands on which I live and work, the Dharawal, Wandi Wandian, and Gadigal people of the Yuin Nation, and pay my respects to Elders past and present. I recognise the significance of this environment to Traditional Owners, and acknowledge their continuing connection to Country.]{style="color:#000000;"}</center>
+
+:::: aside
+::: {style="font-size: 60%; color: #000000;"}
+Bristol Point, Yuin Country
+:::
+::::
+
+
+# We all want to write good code {background-color="#212932" style="color: #ffffff; font-size: 70%" transition="fade"}
+
+
+## But good code doesn't just magically happen {background-color="#5C6836" style="color: #ffffff;font-size: 70%;"}
+
+<center>![](images/oh-no-imagination.png)</center>
+
+::: {.fragment .fade-in fragment-index=1}
+<center>
+<br>
+[Despite many researchers using code, very few are trained in programming.<br>This increases the chance for messy or broken code in science.]{style="font-size:105%;"}
+</center>
+:::
+
+## {background-image="images/wall-e.jpg" style="color: #ffffff;font-size: 90%;"}
+
+:::{.absolute right=0 bottom=0}
+[Research waste]{style="font-size:3.4rem; face-weight:bold;"} 
+:::
+
+
+## Supporting good coding practices at the ALA {style="font-size: 90%;"}
+
+::::: columns
+::: {.column width="33%"}
+<center>
+
+![](images/galah_logo.png){height="300"}
+
+[<https://galah.ala.org.au/>]{style="font-size:1.2rem;"}
+
+</center>
+:::
+
+::: {.column width="33%"}
+<center>
+
+![](images/twitter-card-preview_frog-small.png){height="300"}
+
+[<https://labs.ala.org.au/>]{style="font-size:1.2rem;"}
+
+</center>
+:::
+
+::: {.column width="33%"}
+<center>
+
+![](images/cleaner-shrimp_cover.png){height="300"}
+
+[<https://cleaning-data-r.ala.org.au/>]{style="font-size:1.2rem;"}
+
+</center>
+:::
+:::::
+
+
+# How to write good code<br>for science {background-color="#212932" style="color: #ffffff; font-size: 70%" transition="fade"}
+
+## {background-color="#665F41" style="color: #ffffff;"}
+
+::: {style="font-size:85%;"}
+
+<br><br>
+
+[`{r} cli::symbol$cross`]{style="color:red;"} Example code<br>
+
+:::
+
+::: {.code style="font-size:55%;"}
+
+```{r}
+#| eval: false
+#| echo: true
+#| warning: false
+#| message: false
+# bad example
+library(tidyverse)
+library(galah)
+library(janitor)
+library(sf)
+library(ozmaps)
+
+galah_config(email="dax.kellie@csiro.au")
+alaData<-galah_call()|>identify("perameles")|>filter(year==2003) |>
+  select(group="basic",cl22)|>
+  atlas_occurrences()|>
+  select(recordID,scientificName,decimalLongitude,decimalLatitude,eventDate,cl22)|>
+  janitor::clean_names()|>rename(state=cl22)|>
+  mutate(event_date=lubridate::ymd(event_date))|>
+  group_by(state)|>count()|>drop_na()
+aus<-ozmaps::ozmap_states|>
+  sf::st_transform(crs=4326)|>
+  left_join(alaData, join_by(NAME==state))|>
+  replace_na(list(n=0))
+
+ggplot()+sf::geom_sf(data=aus,aes(fill=n),colour="grey60")+
+  viridis::scale_fill_viridis(option="F",begin=0.2,direction=-1)+theme_void()+theme(legend.position="right")
+```
+
+:::
+
+## Code style {background-color="#665F41" style="color: #ffffff;"}
+
+::: {style="font-size:85%;"}
+
+*  Write code like you write sentences, add spaces<br>
+
+:::
+
+::: {.code style="font-size:55%;"}
+
+```{r}
+#| eval: false
+#| echo: true
+#| warning: false
+#| message: false
+# better example
+library(tidyverse)
+library(galah)
+library(janitor)
+library(sf)
+library(ozmaps)
+
+galah_config(email = "dax.kellie@csiro.au")
+alaData <- galah_call() |> identify("perameles") |> filter(year == 2003) |>
+  select(group = "basic", cl22)|>
+  atlas_occurrences() |>
+  select(recordID, scientificName, decimalLongitude, decimalLatitude, eventDate, cl22) |>
+  janitor::clean_names() |> rename(state = cl22) |>
+  mutate(event_date = lubridate::ymd(event_date)) |>
+  group_by(state) |> count() |> drop_na()
+aus <- ozmaps::ozmap_states |>
+  sf::st_transform(crs = 4326) |>
+  left_join(alaData, join_by(NAME == state)) |>
+  replace_na(list(n = 0))
+
+ggplot() + sf::geom_sf(data = aus,aes(fill = n),colour = "grey60") +
+  viridis::scale_fill_viridis(option = "F", begin = 0.2, direction = -1) + theme_void() + theme(legend.position = "right")
+```
+
+:::
+
+
+## Code style {background-color="#665F41" style="color: #ffffff;"}
+
+::: {style="font-size:85%;"}
+
+*  Break tasks into smaller code chunks
+*  Line breaks allow code to breathe
+
+:::
+
+::: {.code style="font-size:55%;"}
+
+```{r}
+#| eval: false
+#| echo: true
+#| warning: false
+#| message: false
+
+# best example
+library(tidyverse)
+library(galah)
+library(janitor)
+library(sf)
+library(ozmaps)
+
+galah_config(email = "dax.kellie@csiro.au")
+
+## Data
+
+aus <- ozmap_states |>
+  st_transform(crs = 4326) # fix projection
+
+bandicoots <- galah_call() |>
+  identify("perameles") |>
+  filter(year == 2003) |>
+  select(group = "basic", cl22) |>
+  atlas_occurrences() 
+
+bandicoots_clean <- bandicoots |>
+  select(recordID, scientificName, decimalLongitude, 
+         decimalLatitude, eventDate, cl22) |>
+  janitor::clean_names() |> 
+  rename(state = cl22) |>
+  mutate(
+    event_date = lubridate::ymd(event_date)
+    ) 
+
+state_counts <- bandicoots_clean |>
+  group_by(state) |> 
+  count() |> 
+  drop_na()
+
+aus_counts <- aus |>
+  left_join(state_counts, join_by(NAME == state)) |>
+  replace_na(list(n = 0))
+
+## Map
+
+ggplot() + 
+  geom_sf(data = aus_counts,
+          aes(fill = n),
+          colour = "grey60") +
+  viridis::scale_fill_viridis(option = "F", 
+                              begin = 0.2, 
+                              direction = -1) + 
+  theme_void() + 
+  theme(legend.position = "right")
+```
+
+:::
+
+## Naming things {background-color="#212932" style="color: #ffffff;" transition="fade"}
+
+::::: {style="font-size:70%;"}
+
+:::: {.columns}
+::: {.column width="50%"}
+
+<center>Bad</center>
+
+Objects
+
+```{r}
+#| eval: false
+#| echo: true
+DT_3_final # unclear
+map1       # vague
+mapOfMarineInvertsFilteredByYear # too long
+```
+
+<br>
+
+Functions
+
+```{r}
+#| eval: false
+#| echo: true
+func1() # unclear
+filter() # unclear, already used
+remove_outlier_if_out_of_range # too long
+```
+
+
+:::
+
+::: {.column width="50%"}
+
+<center>Good</center>
+
+Objects
+
+```{r}
+#| eval: false
+#| echo: true
+cockatoos_grouped
+map_inverts
+map_inverts_marine
+```
+
+<br>
+
+Functions
+
+```{r}
+#| eval: false
+#| echo: true
+get_counts() 
+remove_outliers() 
+has_outlier()
+```
+
+:::
+::::
+:::::
+
+## Naming things {background-color="#212932" style="color: #ffffff;" transition="fade"}
+
+::::: {style="font-size: 70%;"}
+
+Datset variable names
+
+*  Variable names align with terms in final paper
+*  Define variables in a README or in-text section
+
+Example: 
+
+:::: {.columns}
+::: {.column width="50%" style="font-size:60%;"}
+`site_id` = Unique site ID \
+`individual_id` = Unique ID of each individual \
+`scientific_name` = genus and species name \
+`group` = Unique group ID (`control`, `high_condition`, `low_condition`) \
+`leaf_length` = Length of leaf (mm) \
+`leaf_width` = Width of leaf (mm) \
+`leaf_mass_per_area` = Leaf dry mass per area, ratio of leaf size to density (g/m^2^) \
+`temp_max` = Maximum temperature, 2023 (C°) \
+`soil_n` = Soil nitrogen (mg/kg) \
+:::
+::: {.column width="50%"}
+
+```{r}
+#| echo: false
+#| eval: true
+
+df <- tibble::tibble(
+  site_id = c("AAC101", "AAC101", "ABB011"),
+  individual_id = c("B-31", "B-32", "L-12"),
+  scientific_name = c("Acacia acuminata", "Acacia acuminata", "Acacia bidwillii"),
+  group = c("control", "high_condition", "low_condition"),
+  leaf_length = c(70.4, 84.0, 8.2),
+  leaf_width = c(3.3, 2.4, 4.2),
+  leaf_mass_per_area = c(105.66, 102.26, 83.98),
+  temp_max = c(42.23, 42.23, 43.04),
+  soil_n = c(25.67, 25.76, 37.34)
+)
+
+df |> gt::gt()
+```
+
+
+:::
+::::
+:::::
+
+
+## Code comments {background-color="#212932" style="color: #ffffff;" transition="fade"}
+
+::::: {style="font-size: 70%;"}
+
+*  Short but informative
+*  Too many long comments is a good indicator that code is unclear (our example from earlier needs minimal notes)
+
+::: {.code style="font-size:60%;"}
+
+```{r}
+#| eval: false
+#| echo: true
+#| warning: false
+#| message: false
+
+# best example
+library(tidyverse)
+library(galah)
+library(janitor)
+library(sf)
+library(ozmaps)
+
+galah_config(email = "dax.kellie@csiro.au")
+
+## Data
+
+aus <- ozmap_states |>
+  st_transform(crs = 4326) # fix projection
+
+bandicoots <- galah_call() |>
+  identify("perameles") |>
+  filter(year == 2003) |>
+  select(group = "basic", cl22) |>
+  atlas_occurrences() 
+
+bandicoots_clean <- bandicoots |>
+  select(recordID, scientificName, decimalLongitude, 
+         decimalLatitude, eventDate, cl22) |>
+  janitor::clean_names() |> 
+  rename(state = cl22) |>
+  mutate(
+    event_date = lubridate::ymd(event_date)
+    ) 
+
+state_counts <- bandicoots_clean |>
+  group_by(state) |> 
+  count() |> 
+  drop_na()
+
+aus_counts <- aus |>
+  left_join(state_counts, join_by(NAME == state)) |>
+  replace_na(list(n = 0))
+
+## Map
+
+ggplot() + 
+  geom_sf(data = aus_counts,
+          aes(fill = n),
+          colour = "grey60") +
+  viridis::scale_fill_viridis(option = "F", 
+                              begin = 0.2, 
+                              direction = -1) + 
+  theme_void() + 
+  theme(legend.position = "right")
+```
+
+:::
+:::::
+
+## Code comments {background-color="#212932" style="color: #ffffff;" transition="fade"}
+
+::::: {style="font-size: 70%;"}
+
+*  Use long comments to discuss *why* you did something
+    -  e.g., Interpret results of a statistical test
+
+Example: 
+
+<center>![](images/multicollinearity-example.png){height="300"}</center>
+
+```{r}
+#| echo: true
+# Variables bio_12 and bio_16 are very highly correlated (94%). 
+# To avoid multicollinearity, we’ll include only bio_12 and bio_4
+```
+
+:::::
+
+## Variables + Functions {background-color="#212932" style="color: #ffffff;" transition="fade"}
+
+::::: {style="font-size: 70%;"}
+
+*  Sometimes you can't avoid complex code
+*  Breaking up steps into smaller variables or functions can make it easier to understand your code
+
+```{r}
+# example
+```
+
+:::::
+
+:::: aside
+::: {style="font-size: 50%;"}
+[O'Dea et al (2021). Towards open, reliable, and transparent ecology and evolutionary biology. *BMC Biology*](https://link.springer.com/article/10.1186/s12915-021-01006-3)
+:::
+::::
+
+## What if you are a busy scientist short on time? {background-color="#212932" style="color: #ffffff;" transition="fade"}
+
+::::: {style="font-size:70%;"}
+
+*  Making code understandable is more important than making it brief or fancy
+
+:::: {.columns}
+::: {.column width="50%"}
+![](images/phd-code_1.png)
+:::
+
+:::{.column width="50%"}
+![](images/phd-code_2.png)
+:::
+
+::::
+:::::
+
+# Summary {background-color="#212932" style="color: #ffffff; font-size: 70%" transition="fade"}
+
+::::: {style="font-size: 70%;"}
+
+
+Clean and readable code
+
+*  Write code like you write sentences
+    -  Add spaces between operators (e.g. `+`, `-`, `*`)
+    -  Add spaces after commas
+*  Break tasks into smaller code chunks
+*  Line breaks allow code to breathe
+
+Naming things
+
+*  Simple but understandable names, avoid acronyms
+*  Make sure variable names align with terms in final paper
+*  Define variables in a README or in-text section
+
+Code comments
+
+Variables + Functions
+
+When you're busy, prioritise readability!
+
+:::::

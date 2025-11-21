@@ -1,0 +1,112 @@
+/*-- scss:ALA theme --*/
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:300,300i&display=swap);
+@import url(https://fonts.googleapis.com/css?family=Lato&display=swap);
+@import url(https://fonts.googleapis.com/css?family=Fira+Mono&display=swap);
+
+// fonts
+$font-family-sans-serif: "Roboto", Roboto, serif;
+$font-family-monospace: "Fira Mono", Fira;
+
+$code-block-font-size: 0.5em;
+$credits-font-size: 0.45em;
+
+// settings for nature-blog slide
+//$code-block-font-size: 0.25em;
+//$code-block-bg: #E5DCC8;
+//$code-block-border-color: lighten($code-block-bg, 60%);
+
+// colors
+$body-bg: #fff !default;
+$body-color: #000 !default;
+$link-color: #51483d !default;
+$selection-bg: #26351c !default;
+$code-color: #222322 !default;
+$custom-color: #26351c;
+$custom-color-ala: #B8573E;
+$custom-link-color: #B8573E;
+
+
+// headings
+$presentation-heading-font: "Roboto", Roboto, serif;
+$presentation-heading-color: #222322;
+$header-font-size: 1.3em;
+$slide-header-font-size: 1.5em;
+
+/*-- scss:rules --*/
+
+.title {
+  font-size: 3.5rem!important;
+}
+
+.reveal a {
+  line-height: 1.3em;
+  color: $custom-link-color;
+}
+
+.reveal h1 {
+  color: $custom-color;
+  font-size: $header-font-size;
+}
+
+.reveal h2 {
+  color: $custom-color;
+  font-size: $slide-header-font-size !important;
+}
+
+.clipped {
+  clip-path: circle();
+}
+
+.reveal .galah h1 {
+  color: $custom-color;
+}
+
+.reveal .galah h2 {
+  color: $custom-color;
+}
+
+.reveal .galah h1 code {
+  color: $custom-color;
+}
+
+.reveal .ala4r h1 {
+  color: $custom-color-ala;
+}
+
+.reveal .ala4r h2 {
+  color: $custom-color-ala;
+}
+
+.credits {
+  color: #fff;
+  font-size: $credits-font-size;
+}
+
+.reveal .slide aside, .reveal .slide div.aside {
+    position: absolute;
+    bottom: -30px;
+    font-size: 0.7em;
+    color: #4d4d4d;
+}
+
+.purple-title .reveal h2 {
+  color: #5D2E46;
+}
+
+.ack-img {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.chunk-class {
+  height: 100vh;
+}
+
+.light-blue-block svg {
+   color: #08f;
+}
+
+.figcaption {
+  colour: #b3b3b3;
+  font-size: 80%;
+}
