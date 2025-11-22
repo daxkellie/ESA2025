@@ -103,7 +103,7 @@ Bristol Point, Yuin Country
 :::::
 
 
-# How to write good code<br>for science {background-color="#212932" style="color: #ffffff; font-size: 70%" transition="fade"}
+# How to write good code in R<br>for science {background-color="#212932" style="color: #ffffff; font-size: 70%" transition="fade"}
 
 ## {background-color="#665F41" style="color: #ffffff;"}
 
@@ -341,7 +341,7 @@ has_outlier()
 Datset variable names
 
 *  Variable names align with terms in final paper
-*  Define variables in a README or in-text section
+*  Define variables in a README or in your Quarto/R markdown file
 
 Example: 
 
