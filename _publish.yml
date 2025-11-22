@@ -1,0 +1,4 @@
+- source: index.qmd
+  quarto-pub:
+    - id: 72b65356-647f-4a4d-9176-0c17e7204fe9
+      url: https://daxkellie.quarto.pub/a-guide-to-writing-good-code-for-the-busy-scientist
