@@ -1,5 +1,6 @@
 ---
-title: "A guide to writing good code for the busy scientist"
+title: "A guide to writing good code <br>for the busy scientist"
+name: "A guide to writing good code for the busy scientist"
 author: "<br><b>Dax Kellie</b>, Shandiya Balasubramaniam, Martin Westgate  <br> 
 ![](images/logos/ALA_Logo.png){style='width: auto; height: 90px; margin-top: 50px; padding-left: 20px; padding-right: 20px'} 
 ![](images/logos/NCRIS_logo.png){style='width: auto; height: 90px; margin-top: 50px; padding-left: 20px; padding-right: 20px'} 
@@ -15,6 +16,7 @@ format:
     theme: [default, custom.scss] 
     transition-speed: fast
     embed-resources: true
+    from: markdown+emoji
 ---
 
 ##  {#acknowledgement data-menu-title="Acknowledgement" background-image="images/beach-greeny.jpg" background-opacity="0.3"}
@@ -33,33 +35,48 @@ Bristol Point, Yuin Country
 # We all want to write good code {background-color="#212932" style="color: #ffffff; font-size: 70%" transition="fade"}
 
 
-## But good code doesn't just magically happen {background-color="#5C6836" style="color: #ffffff;font-size: 70%;"}
+## But good code doesn't just magically happen {background-color="#5C6836" style="color: #ffffff; font-size: 80%;"}
 
 <center>![](images/oh-no-imagination.png)</center>
 
-::: {.fragment .fade-in fragment-index=1}
+::: {.fragment .fade-in fragment-index=1 style="font-size: 90%;"}
 <center>
 <br>
 [Despite many researchers using code, very few are trained in programming.<br>This increases the chance for messy or broken code in science.]{style="font-size:105%;"}
 </center>
 :::
 
+:::: aside
+::: {style="font-size: 70%;"}
+[Alex Norris, webcomicname.com](https://webcomicname.com/)
+:::
+::::
+
 ## {background-image="images/wall-e.jpg" style="color: #ffffff;font-size: 90%;"}
 
-:::{.absolute right=0 bottom=0}
+:::{.absolute right=0 bottom=15}
 [Research waste]{style="font-size:3.4rem; face-weight:bold;"} 
 :::
 
+:::: aside
+::: {style="font-size: 50%;"}
+[Purgar et al (2022). Quantifying research waste in ecology. *Nature Ecology & Evolution*](https://doi.org/10.1038/s41559-022-01820-0) \
+[Sánchez-Tójar et al (2025). Code-sharing policies are associated with increased reproducibility potential of ecological findings. *Peer Community Journal*](https://doi.org/10.24072/pcjournal.541) \
+[Image credit: Pixar, sourced from https://gizmodo.com/wall-e-tried-to-warn-us-1847335905](https://gizmodo.com/wall-e-tried-to-warn-us-1847335905)
+:::
+::::
 
-## Supporting good coding practices at the ALA {style="font-size: 90%;"}
+## Supporting good coding practices at the ALA {style="font-size: 83%;"}
 
 ::::: columns
 ::: {.column width="33%"}
 <center>
 
-![](images/galah_logo.png){height="300"}
+![](images/galah-galaxias_medium.png){height="300"}
 
-[<https://galah.ala.org.au/>]{style="font-size:1.2rem;"}
+[<https://galah.ala.org.au/>]{style="font-size:1.2rem;"} \ 
+[<https://galaxias.ala.org.au/>]{style="font-size:1.2rem;"}
+
 
 </center>
 :::
@@ -182,13 +199,23 @@ ggplot() + sf::geom_sf(data = aus,aes(fill = n),colour = "grey60") +
 
 :::
 
-::: {.code style="font-size:55%;"}
+::: {.code style="font-size:60%;"}
+
+```{=html}
+<style>
+.shorter-chunk {
+  height: 400px;
+  overflow-y: auto;
+}
+</style>
+```
 
 ```{r}
 #| eval: false
 #| echo: true
 #| warning: false
 #| message: false
+#| class-source: shorter-chunk
 
 # best example
 library(tidyverse)
@@ -271,7 +298,7 @@ Functions
 #| echo: true
 func1() # unclear
 filter() # unclear, already used
-remove_outlier_if_out_of_range # too long
+remove_outlier_if_out_of_range() # too long
 ```
 
 
@@ -357,12 +384,14 @@ df |> gt::gt()
 :::::
 
 
-## Code comments {background-color="#212932" style="color: #ffffff;" transition="fade"}
+## Code comments {background-color="#2E212A" style="color: #ffffff;" transition="fade"}
 
 ::::: {style="font-size: 70%;"}
 
 *  Short but informative
 *  Too many long comments is a good indicator that code is unclear (our example from earlier needs minimal notes)
+
+:::::
 
 ::: {.code style="font-size:60%;"}
 
@@ -371,6 +400,7 @@ df |> gt::gt()
 #| echo: true
 #| warning: false
 #| message: false
+#| class-source: shorter-chunk
 
 # best example
 library(tidyverse)
@@ -424,9 +454,8 @@ ggplot() +
 ```
 
 :::
-:::::
 
-## Code comments {background-color="#212932" style="color: #ffffff;" transition="fade"}
+## Code comments {background-color="#2E212A" style="color: #ffffff;" transition="fade"}
 
 ::::: {style="font-size: 70%;"}
 
@@ -445,31 +474,82 @@ Example:
 
 :::::
 
-## Variables + Functions {background-color="#212932" style="color: #ffffff;" transition="fade"}
+## Explaining variables {background-color="#212932" style="color: #ffffff;" transition="fade"}
 
 ::::: {style="font-size: 70%;"}
 
 *  Sometimes you can't avoid complex code
 *  Breaking up steps into smaller variables or functions can make it easier to understand your code
 
+:::: {.columns}
+::: {.column width="50%" style="font-size:80%;"}
+
 ```{r}
-# example
+#| eval: false
+#| echo: true
+
+# Without explaining variable
+
+library(ozmaps)
+library(sf)
+library(dplyr)
+
+grid <- st_make_grid(ozmap_country,
+                     what = "polygons",
+                     cellsize = 1.0,
+                     square = FALSE,
+                     flat_topped = TRUE)
+
+# subset to grid cells that are within land
+aus_grid <- oz_grid[as.data.frame(st_intersects(oz_grid, ozmap_country))$row.id]
 ```
 
+:::
+
+::: {.column width="50%" style="font-size:80%;"}
+
+```{r}
+#| eval: false
+#| echo: true
+
+# With explaining variable
+
+library(ozmaps)
+library(sf)
+library(dplyr)
+
+grid <- st_make_grid(ozmap_country,
+                     what = "polygons",
+                     cellsize = 1.0,
+                     square = FALSE,
+                     flat_topped = TRUE)
+
+hex_on_land <- grid |>
+  st_intersects(ozmap_country) |>
+  as.data.frame() |>
+  pull(row.id)
+
+aus_grid <- grid[hex_on_land]
+```
+
+:::
+
+::::
 :::::
 
 :::: aside
 ::: {style="font-size: 50%;"}
-[O'Dea et al (2021). Towards open, reliable, and transparent ecology and evolutionary biology. *BMC Biology*](https://link.springer.com/article/10.1186/s12915-021-01006-3)
+[Explaining Variable by Pete Hodgson (2021)](https://blog.thepete.net/blog/2021/06/24/explaining-variable/)
 :::
 ::::
 
-## What if you are a busy scientist short on time? {background-color="#212932" style="color: #ffffff;" transition="fade"}
-
-::::: {style="font-size:70%;"}
+## What if you are a busy scientist short on time? {background-color="#262F29" style="color: #ffffff; font-size:80%;" transition="fade"}
 
 *  Making code understandable is more important than making it brief or fancy
 
+::: {style="font-size: 60%;"}
+:point_down: Actual terrible code from my PhD, but I still can tell what it does and could use it again (and that's the important part)!
+:::
 :::: {.columns}
 ::: {.column width="50%"}
 ![](images/phd-code_1.png)
@@ -480,31 +560,61 @@ Example:
 :::
 
 ::::
+
+
+## Summary {background-color="#212932" style="color: #ffffff;" transition="fade"}
+
+::::: {style="font-size: 60%;"}
+
+:::: {.columns}
+::: {.column width="60%"}
+
+*  Use a clean and readable code style
+*  Naming things
+    -  Name things with simple, understandable names + avoid acronyms
+    -  Make sure variable names are documented, and align with the final paper
+*  Code comments
+    -  Code comments should be short but clear
+    -  Use long code comments to document analytic interpretations
+*  Explaining variables can simplify complex code
+
+<br>
+
+**When you're busy, prioritise readability over brevity!**
+:::
+
+::: {.column width = "40%"}
+![](images/oh-no-imagination-only.png)
+:::
+::::
+
+:::: aside
+::: {style="font-size: 50%;"}
+[Alex Norris, webcomicname.com](https://webcomicname.com/) \
+[I highly recommend watching Code Smells & Feels by Jenny Bryan for more amazing tips (aimed at programmers)](https://www.youtube.com/watch?v=7oyiPBjLAWY)
+:::
+::::
+
 :::::
 
-# Summary {background-color="#212932" style="color: #ffffff; font-size: 70%" transition="fade"}
+## Thank you {background-image="images/stripe-background.png" background-opacity="0.3"}
 
-::::: {style="font-size: 70%;"}
+::: columns
+::: {.column width="60%"}
+::: {style="font-size: 70%;"}
+<br> <b>Dax Kellie</b><br>Data Analyst & Science Lead<br>Science & Decision Support \| ALA <br>{{< fa envelope size=lg >}}: [dax.kellie@csiro.au](mailto:dax.kellie@csiro.au)<br> {{< iconify simple-icons:bluesky size=lg fill='#fe4' >}}: [\@daxkellie.bsky.social](https://bsky.app/profile/daxkellie.bsky.social)<br> {{< fa brands github size=lg >}}: [\@daxkellie](https://github.com/daxkellie) <br> <br> <b>Science & Decision Support team</b><br> Martin Westgate, Shandiya Balasubramaniam<br> Juliet Seers, Amanda Buyan<br><br><em>These slides were made using Quarto & RStudio</em>
+:::
+:::
 
+::: {.column width="40%"}
+<center>
+Slides: <br>
 
-Clean and readable code
+![](images/qr-code.png){height=170}
 
-*  Write code like you write sentences
-    -  Add spaces between operators (e.g. `+`, `-`, `*`)
-    -  Add spaces after commas
-*  Break tasks into smaller code chunks
-*  Line breaks allow code to breathe
+--------------------------------------------------------------------------------
 
-Naming things
-
-*  Simple but understandable names, avoid acronyms
-*  Make sure variable names align with terms in final paper
-*  Define variables in a README or in-text section
-
-Code comments
-
-Variables + Functions
-
-When you're busy, prioritise readability!
-
-:::::
+![](images/logos/ALA_Logo.png){style="width: auto; height: 90px"}<br> ![](images/logos/NCRIS_logo.png){style="width: auto; height: 90px"} ![](images/logos/CSIRO_logo.png){style="width: auto; height: 90px"}
+</center>
+:::
+:::
